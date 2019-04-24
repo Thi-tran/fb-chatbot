@@ -6,19 +6,16 @@ const app = express()
 
 app.set('port', (process.env.PORT || 5000))
 
-// Allows us to process the data
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
-// ROUTES
-
 app.get('/', function(req, res) {
-	res.send("Hi I am a chatbot")
+	res.send("The chatbot is working!")
 })
 
-let token = "EAAelKjl2oDgBANHurTAbqZC4rjzeXVAqigPTErZCaMY4hiD3KqpM2urysjLQSZChqHnswpgTcVq9u5Sjt3XwsB6dzGZBSq5EzzZAvMjiKGnt5BvIrcZATZCc1Y8XiLBnwgQFlZCUIZByArIVqFNijFDWWve6jeUiH8xrthJMS13DNjwLd3vN94Mhm";
+// Add you Page Access Token
+let token = "";
 
-// Facebook 
 
 app.get('/webhook/', function(req, res) {
   const tokenServer= req.query['hub.verify_token'],
