@@ -3,7 +3,7 @@ const
   express = require('express'),
   bodyParser = require('body-parser'),
   app = express().use(bodyParser.json()); // creates express http server
-
+const request = require('request');
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 1337, () => console.log('webhook is listening'));
 
@@ -13,33 +13,40 @@ app.get('/', (req,res) => {
 
 // Facebook
 
-
+const token = "EAAelKjl2oDgBANHurTAbqZC4rjzeXVAqigPTErZCaMY4hiD3KqpM2urysjLQSZChqHnswpgTcVq9u5Sjt3XwsB6dzGZBSq5EzzZAvMjiKGnt5BvIrcZATZCc1Y8XiLBnwgQFlZCUIZByArIVqFNijFDWWve6jeUiH8xrthJMS13DNjwLd3vN94Mhm";
 
 // Creates the endpoint for our webhook 
-app.post('/webhook', (req, res) => {  
- 
-    let body = req.body;
-  
-    // Checks this is an event from a page subscription
-    if (body.object === 'page') {
-  
-      // Iterates over each entry - there may be multiple if batched
-      body.entry.forEach(function(entry) {
-  
-        // Gets the message. entry.messaging is an array, but 
-        // will only ever contain one message, so we get index 0
-        let webhook_event = entry.messaging[0];
-        console.log(webhook_event);
-      });
-  
-      // Returns a '200 OK' response to all requests
-      res.status(200).send('EVENT_RECEIVED');
-    } else {
-      // Returns a '404 Not Found' if event is not from a page subscription
-      res.sendStatus(404);
+app.post('/webhook/', (req, res) => {  
+    let messaging_events = req.body.entry[0].messaging_events;
+    for (let i = 0; i< messaging_events.lenth; i++) {
+        let event = messaging_events[i];
+        let sender = event.sender.id;
+        if (event.message && event.message.text) {
+            let text = event.message.text;
+            sendText(sender, "Text echo: "+ text.substring(0,100));
+        }
     }
-  
-  });
+    res.status(200).send('request sent')
+});
+
+sendText = (sender, text) => {
+    let messageData = {text};
+    request({
+        url: "https://graph.facebook.com/v2.6/me/messages",
+        qs: {access_token, token},
+        method: "POST",
+        json: {
+            receipt: {id: sender},
+            message: messageData
+        }
+    }, (err, response, body) => {
+        if (err) {
+            console.log("sending erro");
+        } else if (response.body.error) {
+            console.log("Resposne body error")
+        }
+    })
+}
 
   app.get('/webhook', (req, res) => {
 
