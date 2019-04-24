@@ -17,7 +17,7 @@ const token = "EAAelKjl2oDgBANHurTAbqZC4rjzeXVAqigPTErZCaMY4hiD3KqpM2urysjLQSZCh
 
 // Creates the endpoint for our webhook 
 app.post('/webhook/', (req, res) => {  
-    let messaging_events = req.body.entry[0].messaging_events;
+    let messaging_events = req.body.entry[0].messaging;
     for (let i = 0; i< messaging_events.lenth; i++) {
         let event = messaging_events[i];
         let sender = event.sender.id;
@@ -33,10 +33,10 @@ sendText = (sender, text) => {
     let messageData = {text};
     request({
         url: "https://graph.facebook.com/v2.6/me/messages",
-        qs: {access_token, token},
+        qs: {access_token: token},
         method: "POST",
         json: {
-            receipt: {id: sender},
+            receipient: {id: sender},
             message: messageData
         }
     }, (err, response, body) => {
