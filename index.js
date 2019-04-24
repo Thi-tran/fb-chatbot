@@ -21,10 +21,12 @@ let token = "EAAelKjl2oDgBANHurTAbqZC4rjzeXVAqigPTErZCaMY4hiD3KqpM2urysjLQSZChqH
 // Facebook 
 
 app.get('/webhook/', function(req, res) {
-	if (req.query['hub.verify_token'] === "thitran") {
+  const tokenServer= req.query['hub.verify_token'],
+      myToken = "thitran";
+	if (tokenServer === myToken) {
 		res.send(req.query['hub.challenge'])
 	}
-	res.send("Wrong token")
+	res.send("Please input another token ")
 })
 
 app.post('/webhook/', function(req, res) {
@@ -33,14 +35,21 @@ app.post('/webhook/', function(req, res) {
 		let event = messaging_events[i]
 		let sender = event.sender.id
 		if (event.message && event.message.text) {
-			let text = event.message.text
-			sendText(sender, "Text echo: " + text)
+      let text = event.message.text;
+      operatingText(sender, text);
 		}
 	}
 	res.sendStatus(200)
 })
 
-function sendText(sender, text) {
+operatingText = (sender, text) => {
+  if (text === "I'm sad") {
+    sendText(sender, "How can I help you?");
+  }
+}
+
+
+sendText = (sender, text) => {
 	let messageData = {text: text}
 	request({
 		url: "https://graph.facebook.com/v2.6/me/messages",
