@@ -2,8 +2,6 @@ const express = require('express');
 const bodyParser  = require('body-parser');
 const request = require('request');
 
-const app = express();
-
 // hosting set up 
 const app = express();
 const port = process.env.PORT || 3000;
